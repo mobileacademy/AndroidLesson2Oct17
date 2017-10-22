@@ -1,9 +1,14 @@
 package ro.mobileacademy.newsreaderapplication.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,21 +22,49 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
+import ro.mobileacademy.newsreaderapplication.CounterAsyncTask;
 import ro.mobileacademy.newsreaderapplication.R;
 import ro.mobileacademy.newsreaderapplication.adapters.PublicationAdapter;
+import ro.mobileacademy.newsreaderapplication.events.CountFinishEvent;
 import ro.mobileacademy.newsreaderapplication.models.Publication;
+import ro.mobileacademy.newsreaderapplication.receivers.PackageInstallReceiver;
+import ro.mobileacademy.newsreaderapplication.services.CounterIntentService;
+import ro.mobileacademy.newsreaderapplication.services.CounterService;
+import ro.mobileacademy.newsreaderapplication.utils.NewsReaderAppPref;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private ImageView myImageView;
 
     private GridView publicationsGridView;
     private PublicationAdapter myAdapter;
     private ArrayList<Publication> publicationList = new ArrayList<>();
+
+    public static final String COUNTER_ACTION  = "count";
+    public static final String LIST_PACKAGES = "packages";
+    public static final String BROADCAST_ACTION = "count_finished";
+
+
+    // step 1- > new custom broadcast receiver
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive") ;
+            Toast.makeText(context, "Times up!", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +108,50 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NewsReaderAppPref pref = new NewsReaderAppPref(this);
+
+        String installedPackage = pref.getString(PackageInstallReceiver.PACKAGE_KEY);
+        if(installedPackage.isEmpty()) {
+            Toast.makeText(this, "No new package installed!", Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(this, "package=" + installedPackage, Toast.LENGTH_SHORT).show();
+        }
+
+
+        // step 2, 3 -> register my custom broadcast receiver
+        IntentFilter intentFilter = new IntentFilter(BROADCAST_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver, intentFilter);
+
+
+        //register to event bus
+        EventBus.getDefault().register(this);
+
+
+        // start asyncTask
+        new CounterAsyncTask().execute(5);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // step 4 - do unregister
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
+
+        //unregister from EventBus
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(CountFinishEvent event) {
+        Toast.makeText(this, "EventBus - event received!" + event.getCount(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -124,9 +201,18 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
+            Log.d(TAG, "start service");
+            //start service from main thread
+            Intent intent = new Intent(this, CounterService.class);
+            intent.setAction(COUNTER_ACTION);
+            startService(intent);
 
         } else if (id == R.id.nav_send) {
 
+            //start intent service
+            Intent intent = new Intent(this, CounterIntentService.class);
+            intent.setAction(COUNTER_ACTION);
+            startService(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

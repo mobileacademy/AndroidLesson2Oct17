@@ -14,6 +14,17 @@ public class NewsReaderApplication extends Application {
     private static final String MyPREFERENCES = "pref";
 
     private int counter = 10;
+
+    private static NewsReaderApplication sInstance;
+
+    public static NewsReaderApplication getInstance() {
+        if(sInstance == null) {
+            sInstance = new NewsReaderApplication();
+        }
+
+        return  sInstance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
