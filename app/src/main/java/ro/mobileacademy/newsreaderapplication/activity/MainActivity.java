@@ -38,6 +38,7 @@ import ro.mobileacademy.newsreaderapplication.models.Publication;
 import ro.mobileacademy.newsreaderapplication.receivers.PackageInstallReceiver;
 import ro.mobileacademy.newsreaderapplication.services.CounterIntentService;
 import ro.mobileacademy.newsreaderapplication.services.CounterService;
+import ro.mobileacademy.newsreaderapplication.utils.HackerNewsAPI;
 import ro.mobileacademy.newsreaderapplication.utils.NewsReaderAppPref;
 
 public class MainActivity extends AppCompatActivity
@@ -103,8 +104,10 @@ public class MainActivity extends AppCompatActivity
         publicationsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, ArticleListActivity.class);
-                startActivity(intent);
+
+                //todo check item position and start cutom list
+
+               ArticleListActivity.newInstance(MainActivity.this, HackerNewsAPI.NEW_STORIES_ENDPOINT);
             }
         });
 
