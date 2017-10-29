@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import ro.mobileacademy.newsreaderapplication.events.ArticleArrayDone;
+import ro.mobileacademy.newsreaderapplication.models.Ingredient;
+import ro.mobileacademy.newsreaderapplication.models.IngredientsResponse;
 
 /**
  * Created by valerica.plesu on 28/10/2017.
@@ -107,6 +109,36 @@ public class VolleyRequestQueue {
 
         return request;
 
+    }
+
+    /**
+     * Custom get request
+     * @param url
+     * @return
+     */
+    public IngredientsRequest getIngredientsRequest(String url) {
+        Log.d(TAG, "getIngredientsRequest");
+
+        IngredientsRequest request = new IngredientsRequest(Request.Method.GET, url, null, new Response.Listener<IngredientsResponse>() {
+            @Override
+            public void onResponse(IngredientsResponse response) {
+                Log.d(TAG, "resp=" + response.getResults().size());
+
+                if(response.getResults().size() > 0) {
+                    for (Ingredient i : response.getResults()){
+                        Log.d("Ingredients: ", i.getName());
+                    }
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "error, ", error);
+            }
+        });
+
+        return request;
     }
 
  }

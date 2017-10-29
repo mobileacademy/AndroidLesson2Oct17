@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -30,6 +31,7 @@ import ro.mobileacademy.newsreaderapplication.events.ArticleUpdate;
 import ro.mobileacademy.newsreaderapplication.events.CountFinishEvent;
 import ro.mobileacademy.newsreaderapplication.models.Article;
 import ro.mobileacademy.newsreaderapplication.networking.HackerNewsAPI;
+import ro.mobileacademy.newsreaderapplication.networking.IngredientsRequest;
 import ro.mobileacademy.newsreaderapplication.networking.VolleyRequestQueue;
 
 public class ArticleListActivity extends AppCompatActivity {
@@ -79,18 +81,24 @@ public class ArticleListActivity extends AppCompatActivity {
 
 
         // handle POST request
-        HashMap<String, String> paramMap = new HashMap<>();
-        paramMap.put("id", "12");
-        paramMap.put("name", "test");
+//        HashMap<String, String> paramMap = new HashMap<>();
+//        paramMap.put("id", "12");
+//        paramMap.put("name", "test");
+//
+//
+//        try {
+//            JsonObjectRequest request1 = VolleyRequestQueue.getInstance().formatPostRequest("url",paramMap );
+//
+//            VolleyRequestQueue.getInstance().addToRequestQueue(this, request1);
+//        } catch (JSONException e) {
+//
+//        }
 
-
-        try {
-            JsonObjectRequest request1 = VolleyRequestQueue.getInstance().formatPostRequest("url",paramMap );
-
-            VolleyRequestQueue.getInstance().addToRequestQueue(this, request1);
-        } catch (JSONException e) {
-
-        }
+        // TESTING CUSTOM GET REQUEST
+        String url = "https://wger.de/api/v2/ingredient";
+        IngredientsRequest ingredientsRequest = VolleyRequestQueue.getInstance().getIngredientsRequest(url);
+        //handle get ingredients request
+        VolleyRequestQueue.getInstance().addToRequestQueue(this, ingredientsRequest);
 
     }
 
