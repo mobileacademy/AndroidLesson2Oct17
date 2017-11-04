@@ -8,11 +8,11 @@ import ro.mobileacademy.newsreaderapplication.models.Article;
  * Created by valerica.plesu on 28/10/2017.
  */
 
-public class ArticleUpdate {
+public class NewStoriesArticleUpdate {
 
     private ArrayList<Article> data;
 
-    public ArticleUpdate(ArrayList<Article> list) {
+    public NewStoriesArticleUpdate(ArrayList<Article> list) {
         data = list;
     }
 

@@ -28,8 +28,9 @@ import java.util.ArrayList;
 
 import ro.mobileacademy.newsreaderapplication.R;
 import ro.mobileacademy.newsreaderapplication.adapters.ArticleCustomAdapter;
+import ro.mobileacademy.newsreaderapplication.events.NewStoriesArticleUpdate;
 import ro.mobileacademy.newsreaderapplication.events.TopStoriesArticleUpdate;
-import ro.mobileacademy.newsreaderapplication.events.TopStoriesArticleArrayDone;
+import ro.mobileacademy.newsreaderapplication.events.NewStoriesArticleArrayDone;
 import ro.mobileacademy.newsreaderapplication.models.Article;
 import ro.mobileacademy.newsreaderapplication.networking.HackerNewsAPI;
 import ro.mobileacademy.newsreaderapplication.networking.VolleyRequestQueue;
@@ -37,7 +38,7 @@ import ro.mobileacademy.newsreaderapplication.networking.VolleyRequestQueue;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TopStoriesFragment extends Fragment {
+public class NewStoriesFragment extends Fragment {
 
     private ListView listView;
     private ArticleCustomAdapter adapter;
@@ -46,12 +47,12 @@ public class TopStoriesFragment extends Fragment {
 
     private ProgressDialog loadingDialog;
 
-    public TopStoriesFragment() {
+    public NewStoriesFragment() {
         // Required empty public constructor
     }
 
-    public static TopStoriesFragment getInstance(String url) {
-        TopStoriesFragment fragment = new TopStoriesFragment();
+    public static NewStoriesFragment getInstance(String url) {
+        NewStoriesFragment fragment = new NewStoriesFragment();
         // send params to fragment
 
         Bundle args = new Bundle();
@@ -125,7 +126,7 @@ public class TopStoriesFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TopStoriesArticleArrayDone event) {
+    public void onMessageEvent(NewStoriesArticleArrayDone event) {
         Toast.makeText(getActivity(), "EventBus - event received!", Toast.LENGTH_SHORT).show();
 
         JSONArray list = event.getListOfIds();
@@ -138,7 +139,7 @@ public class TopStoriesFragment extends Fragment {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TopStoriesArticleUpdate event) {
+    public void onMessageEvent(NewStoriesArticleUpdate event) {
         Toast.makeText(getActivity(), "EventBus - Articles done!", Toast.LENGTH_SHORT).show();
 
         //dismiss progress dialog
@@ -176,7 +177,7 @@ public class TopStoriesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Article> articles) {
-            EventBus.getDefault().post(new TopStoriesArticleUpdate(articles));
+            EventBus.getDefault().post(new NewStoriesArticleUpdate(articles));
         }
     }
 }

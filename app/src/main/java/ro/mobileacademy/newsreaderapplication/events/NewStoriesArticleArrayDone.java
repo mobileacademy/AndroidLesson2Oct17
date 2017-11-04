@@ -6,11 +6,11 @@ import org.json.JSONArray;
  * Created by valerica.plesu on 28/10/2017.
  */
 
-public class ArticleArrayDone {
+public class NewStoriesArticleArrayDone {
 
     private JSONArray listOfIds;
 
-    public ArticleArrayDone(JSONArray items) {
+    public NewStoriesArticleArrayDone(JSONArray items) {
         listOfIds = items;
     }
 

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 import ro.mobileacademy.newsreaderapplication.R;
 import ro.mobileacademy.newsreaderapplication.adapters.ArticleCustomAdapter;
-import ro.mobileacademy.newsreaderapplication.events.ArticleArrayDone;
-import ro.mobileacademy.newsreaderapplication.events.ArticleUpdate;
+import ro.mobileacademy.newsreaderapplication.events.NewStoriesArticleArrayDone;
+import ro.mobileacademy.newsreaderapplication.events.TopStoriesArticleUpdate;
 import ro.mobileacademy.newsreaderapplication.models.Article;
 import ro.mobileacademy.newsreaderapplication.networking.HackerNewsAPI;
 import ro.mobileacademy.newsreaderapplication.networking.IngredientsRequest;
@@ -103,7 +103,7 @@ public class OldArticleListActivity extends AppCompatActivity {
     }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMessageEvent(ArticleUpdate event) {
+//    public void onMessageEvent(TopStoriesArticleUpdate event) {
 //        Toast.makeText(this, "EventBus - event received!", Toast.LENGTH_SHORT).show();
 //
 //        ArrayList<Article> list = event.getData();
@@ -113,7 +113,7 @@ public class OldArticleListActivity extends AppCompatActivity {
 //    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(ArticleArrayDone event) {
+    public void onMessageEvent(NewStoriesArticleArrayDone event) {
         Toast.makeText(this, "EventBus - event received!", Toast.LENGTH_SHORT).show();
 
         JSONArray list = event.getListOfIds();
@@ -206,7 +206,7 @@ public class OldArticleListActivity extends AppCompatActivity {
 
             //mainThread
             Log.d(TAG, "response size = " + list.size());
-            EventBus.getDefault().post(new ArticleUpdate(list
+            EventBus.getDefault().post(new TopStoriesArticleUpdate(list
            ));
         }
     }

@@ -9,7 +9,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.greenrobot.eventbus.EventBus;
@@ -17,10 +16,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 
-import ro.mobileacademy.newsreaderapplication.events.ArticleArrayDone;
+import ro.mobileacademy.newsreaderapplication.events.NewStoriesArticleArrayDone;
+import ro.mobileacademy.newsreaderapplication.events.TopStoriesArticleArrayDone;
 import ro.mobileacademy.newsreaderapplication.models.Ingredient;
 import ro.mobileacademy.newsreaderapplication.models.IngredientsResponse;
 
@@ -54,14 +53,18 @@ public class VolleyRequestQueue {
         getRequestQueue(context).add(request);
     }
 
-    public JsonArrayRequest formatJsonGetRequest(String url) {
+    public JsonArrayRequest formatJsonGetRequest(final String url) {
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.d(TAG, "resp=" + response);
 
-                EventBus.getDefault().post(new ArticleArrayDone(response));
+                if (url.equalsIgnoreCase(HackerNewsAPI.NEW_STORIES_ENDPOINT)) {
+                    EventBus.getDefault().post(new NewStoriesArticleArrayDone(response));
+                } else {
+                    EventBus.getDefault().post(new TopStoriesArticleArrayDone(response));
+                }
             }
         }, new Response.ErrorListener() {
             @Override
