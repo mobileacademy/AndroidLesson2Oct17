@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ro.mobileacademy.newsreaderapplication.NewsReaderApplication;
 import ro.mobileacademy.newsreaderapplication.R;
@@ -35,6 +38,7 @@ import ro.mobileacademy.newsreaderapplication.events.NewStoriesArticleArrayDone;
 import ro.mobileacademy.newsreaderapplication.models.Article;
 import ro.mobileacademy.newsreaderapplication.networking.HackerNewsAPI;
 import ro.mobileacademy.newsreaderapplication.networking.VolleyRequestQueue;
+import ro.mobileacademy.newsreaderapplication.utils.NewsReaderAppPref;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -82,7 +86,7 @@ public class NewStoriesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_top_stories, container, false);
+        View view = inflater.inflate(R.layout.fragment_top_stories, container, false);
 
         listView = (ListView) view.findViewById(R.id.article_list);
         listView.setAdapter(adapter);
@@ -114,7 +118,7 @@ public class NewStoriesFragment extends Fragment {
         super.onPause();
         EventBus.getDefault().unregister(this);
 
-        if(loadingDialog != null) {
+        if (loadingDialog != null) {
             loadingDialog.dismiss();
         }
     }
@@ -131,12 +135,25 @@ public class NewStoriesFragment extends Fragment {
         Toast.makeText(getActivity(), "EventBus - event received!", Toast.LENGTH_SHORT).show();
 
         JSONArray list = event.getListOfIds();
-        if(list != null) {
+        if (list != null) {
+
+            // save download last time
+            NewsReaderAppPref pref = new NewsReaderAppPref(getActivity());
+            long currentTime = System.currentTimeMillis();
+
+            long lastDownloadedTime = pref.getLong("last_download_time");
+
+            if (lastDownloadedTime != 0 && (lastDownloadedTime > currentTime + 5 * 3600 * 1000)) {
+
+                pref.saveLong("last_download_time", currentTime);
+
+            }
+
             //start async task
-            new LoadArticleAsync().execute(list);
+            new LoadArticleAsync(lastDownloadedTime).execute(list);
+
         }
     }
-
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -146,41 +163,61 @@ public class NewStoriesFragment extends Fragment {
         //dismiss progress dialog
         loadingDialog.dismiss();
 
-        if(event.getData() != null) {
+        if (event.getData() != null) {
             adapter.updateData(event.getData());
         }
     }
 
     private static class LoadArticleAsync extends AsyncTask<JSONArray, Void, ArrayList<Article>> {
 
+        private long lastDownloadedTime = 0;
+
+        public LoadArticleAsync(long lastDownTime) {
+            lastDownloadedTime = lastDownTime;
+        }
+
         @Override
         protected ArrayList<Article> doInBackground(JSONArray... jsonArrays) {
+
             JSONArray jsonElements = jsonArrays[0];
 
             ArrayList<Article> result = new ArrayList<>();
-            try {
-                for(int i=0; i< 20; i++) {
-                    String articleUrl = HackerNewsAPI.ITEM_ENDPOINT + jsonElements.getLong(i) + ".json";
 
-                    String articleResponse = HackerNewsAPI.getArticle(articleUrl);
-                    if(articleResponse == null) {
-                        continue;
+            long currentTime = System.currentTimeMillis();
+
+            if (lastDownloadedTime != 0 && (lastDownloadedTime > currentTime + 5 * 3600 * 1000)) {
+                try {
+                    for (int i = 0; i < 20; i++) {
+                        String articleUrl = HackerNewsAPI.ITEM_ENDPOINT + jsonElements.getLong(i) + ".json";
+
+                        String articleResponse = HackerNewsAPI.getArticle(articleUrl);
+                        if (articleResponse == null) {
+                            continue;
+                        }
+
+                        JSONObject articleJson = new JSONObject(articleResponse);
+
+                        Article newArticle = HackerNewsAPI.parseJsonArticle(articleJson);
+                        newArticle.setPublicationId(HackerNewsAPI.PUBLICATION_BIZIDAY_ID);
+
+                        //insert just downloaded article into table
+                        NewsReaderApplication.getInstance().getDataSource().insertArticle(newArticle);
+
+                        result.add(newArticle);
                     }
-
-                    JSONObject articleJson = new JSONObject(articleResponse);
-
-                    Article newArticle = HackerNewsAPI.parseJsonArticle(articleJson);
-                    newArticle.setPublicationId(HackerNewsAPI.PUBLICATION_BIZIDAY_ID);
-
-                    //insert just downloaded article into table
-                    NewsReaderApplication.getInstance().getDataSource().insertArticle(newArticle);
-
-                    result.add(newArticle);
+                } catch (JSONException e) {
+                    //error
                 }
-            } catch (JSONException e) {
-                //error
+
+            } else {
+                Log.d("@@@@@asynctask@@@@@@", "No need for fresh download");
+
+                // read local data from db
+                result = NewsReaderApplication.getInstance().getDataSource().
+                        getAllArticlesByPublication(HackerNewsAPI.PUBLICATION_BIZIDAY_ID);
             }
-           return result;
+
+            return result;
         }
 
         @Override

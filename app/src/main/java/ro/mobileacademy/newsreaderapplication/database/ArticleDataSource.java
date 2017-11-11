@@ -57,9 +57,9 @@ public class ArticleDataSource {
         Log.d(TAG, "insertId = " + insertedId);
     }
 
-    public List<Article> getAllArticlesByPublication(long publicationId) {
+    public ArrayList<Article> getAllArticlesByPublication(long publicationId) {
 
-        List<Article> articles = new ArrayList<>();
+        ArrayList<Article> articles = new ArrayList<>();
 
 //        String[] args = new String[] { String.valueOf(publicationId) };
         Cursor cursor = database.query(MyDatabaseHelper.TABLE_ARTICLE, allArticleColumns,
