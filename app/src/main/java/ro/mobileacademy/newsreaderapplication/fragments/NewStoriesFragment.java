@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import ro.mobileacademy.newsreaderapplication.NewsReaderApplication;
 import ro.mobileacademy.newsreaderapplication.R;
 import ro.mobileacademy.newsreaderapplication.adapters.ArticleCustomAdapter;
 import ro.mobileacademy.newsreaderapplication.events.NewStoriesArticleUpdate;
@@ -167,7 +168,14 @@ public class NewStoriesFragment extends Fragment {
                     }
 
                     JSONObject articleJson = new JSONObject(articleResponse);
-                    result.add(HackerNewsAPI.parseJsonArticle(articleJson));
+
+                    Article newArticle = HackerNewsAPI.parseJsonArticle(articleJson);
+                    newArticle.setPublicationId(HackerNewsAPI.PUBLICATION_BIZIDAY_ID);
+
+                    //insert just downloaded article into table
+                    NewsReaderApplication.getInstance().getDataSource().insertArticle(newArticle);
+
+                    result.add(newArticle);
                 }
             } catch (JSONException e) {
                 //error

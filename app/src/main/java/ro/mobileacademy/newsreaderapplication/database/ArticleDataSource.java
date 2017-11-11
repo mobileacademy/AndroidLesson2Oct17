@@ -57,17 +57,19 @@ public class ArticleDataSource {
         Log.d(TAG, "insertId = " + insertedId);
     }
 
-    public List<Article> getAllArticlesByPublication(int publicationId) {
+    public List<Article> getAllArticlesByPublication(long publicationId) {
 
         List<Article> articles = new ArrayList<>();
 
+//        String[] args = new String[] { String.valueOf(publicationId) };
         Cursor cursor = database.query(MyDatabaseHelper.TABLE_ARTICLE, allArticleColumns,
-                MyDatabaseHelper.ARTICLE_COLUMN_PUBLICATION_ID + " = " + publicationId,
+                null ,
                 null, null, null, null);
 
         if (cursor != null) {
             // go to first entry
             cursor.moveToFirst();
+            Log.d(TAG, "cursor size=" + cursor.getCount());
 
             while (cursor.moveToNext()) {
                 Article article = cursorToArticle(cursor);

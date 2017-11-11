@@ -28,12 +28,16 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ro.mobileacademy.newsreaderapplication.CounterAsyncTask;
+import ro.mobileacademy.newsreaderapplication.NewsReaderApplication;
 import ro.mobileacademy.newsreaderapplication.R;
 import ro.mobileacademy.newsreaderapplication.adapters.PublicationAdapter;
 import ro.mobileacademy.newsreaderapplication.events.CountFinishEvent;
+import ro.mobileacademy.newsreaderapplication.models.Article;
 import ro.mobileacademy.newsreaderapplication.models.Publication;
+import ro.mobileacademy.newsreaderapplication.networking.HackerNewsAPI;
 import ro.mobileacademy.newsreaderapplication.receivers.PackageInstallReceiver;
 import ro.mobileacademy.newsreaderapplication.services.CounterIntentService;
 import ro.mobileacademy.newsreaderapplication.services.CounterService;
@@ -135,6 +139,11 @@ public class MainActivity extends AppCompatActivity
 
         // start asyncTask
         new CounterAsyncTask().execute(5);
+
+
+        List<Article> articles = NewsReaderApplication.getInstance().getDataSource().getAllArticlesByPublication(HackerNewsAPI.PUBLICATION_LIBERTY_ID);
+
+        Log.d(TAG, "######## article db size entries = " + articles.size());
     }
 
     @Override

@@ -13,9 +13,14 @@ import android.util.Log;
 
 import com.android.volley.toolbox.StringRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ro.mobileacademy.newsreaderapplication.NewsReaderApplication;
 import ro.mobileacademy.newsreaderapplication.R;
 import ro.mobileacademy.newsreaderapplication.fragments.NewStoriesFragment;
 import ro.mobileacademy.newsreaderapplication.fragments.TopStoriesFragment;
+import ro.mobileacademy.newsreaderapplication.models.Article;
 import ro.mobileacademy.newsreaderapplication.networking.HackerNewsAPI;
 
 /**
@@ -87,6 +92,12 @@ public class ArticleListActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+    }
 
     // create pager adapter
     public static class MyPagerAdapter extends FragmentPagerAdapter {

@@ -20,6 +20,12 @@ public class HackerNewsAPI {
     public static final String NEW_STORIES_ENDPOINT = BASE_ENDPOINT + "newstories.json";
     public static final String ITEM_ENDPOINT = BASE_ENDPOINT + "item/";
 
+    public static final long PUBLICATION_BIZIDAY_ID = 10L;
+    public static final long PUBLICATION_LIBERTY_ID = 20L;
+
+    public static final String PUBLICATION_BIZIDAY_NAME = "Biziday";
+    public static final String PUBLICATION_LIBERTY_NAME = "Liberty";
+
 
     //declare okhttp instance
     private static OkHttpClient httpClientInstance;
@@ -71,6 +77,7 @@ public class HackerNewsAPI {
 
         item.setTime(date);
         item.setUrl(url);
+        item.setId(json.optLong("id"));
 
         return item;
 
