@@ -31,7 +31,7 @@ public class HackerNewsAPI {
         return httpClientInstance;
     }
 
-    public static String getTopStories (String url) {
+    public static String getStories(String url) {
         Request getRequest = new Request.Builder().url(url).build();
 
         Response response;

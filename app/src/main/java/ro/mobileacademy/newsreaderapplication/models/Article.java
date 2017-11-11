@@ -10,6 +10,9 @@ public class Article {
     private String title;
     private String url;
     private long time;
+    private int publicationId;
+
+    public Article() {}
 
     public Article (String title) {
         this.title = title;
@@ -45,5 +48,13 @@ public class Article {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public int getPublicationId() {
+        return publicationId;
+    }
+
+    public void setPublicationId(int publicationId) {
+        this.publicationId = publicationId;
     }
 }

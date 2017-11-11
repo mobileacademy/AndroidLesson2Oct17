@@ -1,29 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!-- A CardView that contains a TextView -->
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/card_view"
     android:layout_width="160dp"
     android:layout_height="160dp"
-    android:gravity="center"
-    android:weightSum="1">
+    android:layout_gravity="center"
+    card_view:cardCornerRadius="4dp">
 
-
-    <ImageView
-        android:id="@+id/picture"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:src="@drawable/ic_menu_gallery"
-        android:layout_weight="1"/>
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lines="2"
-        android:ellipsize="end"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        tools:text="Tech Crunch"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:weightSum="1">
 
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/picture"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_menu_gallery" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="2"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Tech Crunch" />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

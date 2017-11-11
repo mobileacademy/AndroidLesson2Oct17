@@ -173,7 +173,7 @@ public class OldArticleListActivity extends AppCompatActivity {
             Log.d(TAG, "doInBackground");
             String url = strings[0];
             // background thread
-            String response = HackerNewsAPI.getTopStories(url);
+            String response = HackerNewsAPI.getStories(url);
             ArrayList<Article> list = new ArrayList<>();
 
             if(response != null) {
