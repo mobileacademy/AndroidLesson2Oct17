@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import com.facebook.stetho.Stetho;
+//import com.facebook.stetho.Stetho;
 
 import ro.mobileacademy.newsreaderapplication.database.ArticleDataSource;
 import ro.mobileacademy.newsreaderapplication.models.Article;
@@ -53,7 +53,7 @@ public class NewsReaderApplication extends Application {
         // open databasse
         dataSource.open();
 
-        Stetho.initializeWithDefaults(this);
+//        Stetho.initializeWithDefaults(this);
 
     }
 
