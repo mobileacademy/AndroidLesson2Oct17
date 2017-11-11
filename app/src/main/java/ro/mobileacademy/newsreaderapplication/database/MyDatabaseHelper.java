@@ -14,7 +14,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = MyDatabaseHelper.class.getSimpleName();
 
     // ARTICLE table
-    private static final String TABLE_ARTICLE = "article";
+    public static final String TABLE_ARTICLE = "article";
     public static final String ARTICLE_COLUMN_ID = "id";
     public static final String ARTICLE_COLUMN_TITLE = "title";
     public static final String ARTICLE_COLUMN_DATE = "date";
@@ -22,7 +22,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public static final String ARTICLE_COLUMN_PUBLICATION_ID = "pub_id";
 
     // PUBLICATION table
-    private static final String TABLE_PUBLICATION = "publication";
+    public static final String TABLE_PUBLICATION = "publication";
     public static final String PUBLICATION_COLUMN_ID = "id";
     public static final String PUBLICATION_COLUMN_TITLE = "title";
 
@@ -32,16 +32,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     // CREATE ARTICLE SQL STATEMENT
     private static final String DATABASE_ARTICLE_CREATE = "create table "
             + TABLE_ARTICLE + "("
-            + ARTICLE_COLUMN_ID + " integer primary key not null, "
+            + ARTICLE_COLUMN_ID + " long primary key not null, "
             + ARTICLE_COLUMN_TITLE + " text not null, "
             + ARTICLE_COLUMN_DATE + " long, "
             + ARTICLE_COLUMN_URL + " text, "
-            + ARTICLE_COLUMN_PUBLICATION_ID + " integer not null);";
+            + ARTICLE_COLUMN_PUBLICATION_ID + " long not null);";
 
     // CREATE PUBLICATION TABLE
     private static final String DATABASE_PUBLICATION_CREATE = "create table "
             + TABLE_PUBLICATION + "("
-            + PUBLICATION_COLUMN_ID + " integer primary key not null, "
+            + PUBLICATION_COLUMN_ID + " long primary key not null, "
             + PUBLICATION_COLUMN_TITLE + " text not null);";
 
     public MyDatabaseHelper (Context context) {
@@ -52,7 +52,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(DATABASE_ARTICLE_CREATE);
+        sqLiteDatabase.execSQL(DATABASE_PUBLICATION_CREATE);
         Log.d(TAG, DATABASE_ARTICLE_CREATE);
+        Log.d(TAG, DATABASE_PUBLICATION_CREATE);
     }
 
     @Override
